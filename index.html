@@ -260,8 +260,44 @@ button{
 
 
 
-<script>
+<script type="module">
 
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+
+
+
+import { initializeApp } from "firebase/app";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzqaMC-SB_bXEIQSpKIK7PJc_Y8yKbhhU",
+  authDomain: "date-invitation-b3f9f.firebaseapp.com",
+  projectId: "date-invitation-b3f9f",
+  storageBucket: "date-invitation-b3f9f.firebasestorage.app",
+  messagingSenderId: "90295219009",
+  appId: "1:90295219009:web:83260db429ed2dca52a7c0"
+};
+
+const app = initializeApp(firebaseConfig);
+
+
+
+
+
+const db = getFirestore(app);
+
+const savedDate = localStorage.getItem("date");
+const savedTime = localStorage.getItem("time");
 
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
@@ -370,56 +406,58 @@ no.style.transform =
 
 
 
-yes.onclick=function(){
+yes.onclick = function () {
 
+document.body.innerHTML = `
 
+<div class="container">
 
-document.body.innerHTML=`
+<div class="heart">❤️</div>
 
-<div style="
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-text-align:center;
-">
+<h1>عالیه! 😍</h1>
 
-
-<h1 style="
-font-size:60px;
-color:#c2185b;
-">
-🎉❤️
-</h1>
-
-
-<h2 style="
-margin-top:20px;
-color:#7a2450;
-">
-خیلی خوشحال شدم 😍
-</h2>
-
-
-<p style="
-font-size:22px;
-margin-top:15px;
-">
-پس بزودی میبینمت  ☕✨
+<p style="margin:20px 0;">
+حالا یه تاریخ برای دیدارمون انتخاب کن ☕
 </p>
 
+<input type="date" id="date">
+
+<br><br>
+
+<input type="time" id="time">
+
+<br><br>
+
+<button id="save">
+ثبت دیدار ❤️
+</button>
+
+<p id="result" style="margin-top:20px;"></p>
 
 </div>
 
 `;
+}
+const save = document.getElementById("save");
 
+save.onclick = async function(){
 
+const date=document.getElementById("date").value;
+const time=document.getElementById("time").value;
 
-};
+await addDoc(collection(db,"dates"),{
 
+date:date,
 
+time:time,
+
+createdAt:new Date()
+
+});
+
+alert("دیدار ثبت شد ❤️");
+
+}
 
 
 
