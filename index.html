@@ -4,7 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 <title>یه سوال ❤️</title>
 
 <style>
@@ -276,7 +282,6 @@ import {
 
 
 
-import { initializeApp } from "firebase/app";
 
 
 const firebaseConfig = {
@@ -296,8 +301,6 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-const savedDate = localStorage.getItem("date");
-const savedTime = localStorage.getItem("time");
 
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
@@ -408,54 +411,87 @@ no.style.transform =
 
 yes.onclick = function () {
 
-document.body.innerHTML = `
+    document.body.innerHTML = `
 
-<div class="container">
+    <div class="container">
 
-<div class="heart">❤️</div>
+        <div class="heart">❤️</div>
 
-<h1>عالیه! 😍</h1>
+        <h1>عالیه! 😍</h1>
 
-<p style="margin:20px 0;">
-حالا یه تاریخ برای دیدارمون انتخاب کن ☕
-</p>
+        <p style="margin:20px 0;">
+        حالا یه تاریخ برای دیدارمون انتخاب کن ☕
+        </p>
 
-<input type="date" id="date">
-
-<br><br>
-
-<input type="time" id="time">
+<input id="date" type="text" placeholder="تاریخ دیدار">
 
 <br><br>
 
-<button id="save">
-ثبت دیدار ❤️
-</button>
+<select id="time">
 
-<p id="result" style="margin-top:20px;"></p>
+<option value="">ساعت را انتخاب کن</option>
 
-</div>
+<option>08:00</option>
+<option>09:00</option>
+<option>10:00</option>
+<option>11:00</option>
+<option>12:00</option>
+<option>15:00</option>
+<option>16:00</option>
+<option>17:00</option>
+<option>18:00</option>
+<option>19:00</option>
+<option>20:00</option>
+<option>21:00</option>
+</select>
 
-`;
-}
-const save = document.getElementById("save");
+        <br><br>
 
-save.onclick = async function(){
+        <button id="save">
+            ثبت دیدار ❤️
+        </button>
 
-const date=document.getElementById("date").value;
-const time=document.getElementById("time").value;
+        <p id="result" style="margin-top:20px;"></p>
 
-await addDoc(collection(db,"dates"),{
-
-date:date,
-
-time:time,
-
-createdAt:new Date()
-
+    </div>
+    `;
+$("#date").persianDatepicker({
+    format: "YYYY/MM/DD",
+    initialValue: false
 });
+    const save = document.getElementById("save");
 
-alert("دیدار ثبت شد ❤️");
+    save.onclick = async function(){
+
+        const date = document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+
+        if(date === "" || time === ""){
+            alert("لطفاً تاریخ و ساعت را انتخاب کن 😊");
+            return;
+        }
+
+        try{
+
+            await addDoc(collection(db,"dates"),{
+
+                date:date,
+                time:time,
+                createdAt:new Date()
+
+            });
+
+            document.getElementById("result").innerHTML =
+            "❤️ دیدار ثبت شد.";
+
+        }catch(error){
+
+            console.error(error);
+            alert("خطا در ذخیره اطلاعات");
+
+        }
+
+    };
 
 }
 
